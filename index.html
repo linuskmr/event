@@ -15,7 +15,7 @@
 			display: flex;
 			justify-content: center;
 			align-items: center;
-			font-size: 1.5em;
+			font-size: 1.2em;
 		}
 		#local-timezone {
 			background-color: #eee;
@@ -40,7 +40,9 @@
 
 		document.getElementById('event-title').innerText = eventTitle
 		document.getElementById('local-timezone').innerText = Intl.DateTimeFormat().resolvedOptions().timeZone
-		document.getElementById('local-time').innerText = datetime.toLocaleString(undefined, { weekday: 'long', year: 'numeric', month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit' })
+		const localTime = datetime.toLocaleString(undefined, { weekday: 'long', year: 'numeric', month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit' })
+		document.getElementById('local-time').innerText = localTime
+		document.title = eventTitle + " · " + localTime
 		document.getElementById('utc-time').innerText = "ISO: " + datetime.toISOString()
 
 	</script>
