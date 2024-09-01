@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>Document</title>
+
+	<style>
+		body {
+			font-family: sans-serif;
+			text-align: center;
+			min-height: 100vh;
+			margin: 0;
+
+			display: flex;
+			justify-content: center;
+			align-items: center;
+			font-size: 1.5em;
+		}
+		#local-timezone {
+			background-color: #eee;
+			border-radius: 3px;
+			padding: 3px;
+		}
+	</style>
+</head>
+<body>
+	<main>
+		<h1 id="event-title"></h1>
+		<span id="local-time"></span> <small id="local-timezone"></small><br><br>
+		<pre id="utc-time"></pre>
+	</main>
+
+	<script>
+		const queryParameters = new URLSearchParams(window.location.search)
+		const eventTitle = queryParameters.get('e')
+		const timeQueryParameter = queryParameters.get('d')
+		const datetime = new Date(Date.parse(timeQueryParameter))
+		console.log(datetime)
+
+		document.getElementById('event-title').innerText = eventTitle
+		document.getElementById('local-timezone').innerText = Intl.DateTimeFormat().resolvedOptions().timeZone
+		document.getElementById('local-time').innerText = datetime.toLocaleString(undefined, { weekday: 'long', year: 'numeric', month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit' })
+		document.getElementById('utc-time').innerText = "ISO: " + datetime.toISOString()
+
+	</script>
+</body>
+</html>
