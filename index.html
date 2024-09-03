@@ -6,9 +6,11 @@
 	<title>Document</title>
 
 	<style>
+		:root {
+			color-scheme: light dark;
+		}
 		body {
 			font-family: sans-serif;
-			text-align: center;
 			min-height: 100vh;
 			margin: 0;
 
@@ -18,33 +20,73 @@
 			font-size: 1.2em;
 		}
 		#local-timezone {
-			background-color: #eee;
 			border-radius: 3px;
 			padding: 3px;
+			font-size: small;
+		}
+		dt {
+			text-transform: uppercase;
+			font-size: small;
+			margin-top: 1em;
+		}
+		dd {
+			margin-left: 0;
+		}
+		pre {
+			margin: 0;
 		}
 	</style>
 </head>
 <body>
-	<main>
-		<h1 id="event-title"></h1>
-		<span id="local-time"></span> <small id="local-timezone"></small><br><br>
-		<pre id="utc-time"></pre>
+	<main id="main">
 	</main>
 
 	<script>
 		const queryParameters = new URLSearchParams(window.location.search)
-		const eventTitle = queryParameters.get('e')
-		const timeQueryParameter = queryParameters.get('d')
-		const datetime = new Date(Date.parse(timeQueryParameter))
-		console.log(datetime)
 
-		document.getElementById('event-title').innerText = eventTitle
-		document.getElementById('local-timezone').innerText = Intl.DateTimeFormat().resolvedOptions().timeZone
-		const localTime = datetime.toLocaleString(undefined, { weekday: 'long', year: 'numeric', month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit' })
-		document.getElementById('local-time').innerText = localTime
-		document.title = eventTitle + " · " + localTime
-		document.getElementById('utc-time').innerText = "ISO: " + datetime.toISOString()
+		const main = document.getElementById('main')
 
+		const eventTitle = document.createElement('h1')
+		eventTitle.innerText = queryParameters.get('title')
+		main.appendChild(eventTitle)
+
+		if (queryParameters.get('location')) {
+			const locationDt = document.createElement('dt')
+			locationDt.innerText = "Location"
+			main.appendChild(locationDt)
+
+			const locationDd = document.createElement('dd')
+			locationDd.innerText = queryParameters.get('location')
+			main.appendChild(locationDd)
+		}
+		if (queryParameters.get('participants')) {
+			const participantsDt = document.createElement('dt')
+			participantsDt.innerText = "Participants"
+			main.appendChild(participantsDt)
+
+			const participantsDd = document.createElement('dd')
+			participantsDd.innerText = queryParameters.get('participants')
+			main.appendChild(participantsDd)
+		}
+
+		const timeQueryParameter = queryParameters.get('date')
+		if (timeQueryParameter) {
+			const datetime = new Date(Date.parse(timeQueryParameter))
+			console.log(datetime)
+
+			const timeDt = document.createElement('dt')
+			timeDt.innerText = `Time (in ${Intl.DateTimeFormat().resolvedOptions().timeZone})`
+			main.appendChild(timeDt)
+
+			const timeDd = document.createElement('dd')
+			const localTimeString = datetime.toLocaleString(undefined, { weekday: 'long', year: 'numeric', month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit' })
+			timeDd.innerText = localTimeString
+			const utcTime = document.createElement('pre')
+			utcTime.innerText = "UTC: " + datetime.toISOString()
+			timeDd.appendChild(utcTime)
+			main.appendChild(timeDd)
+			document.title = queryParameters.get('title') + " · " + localTimeString
+		}
 	</script>
 </body>
 </html>
